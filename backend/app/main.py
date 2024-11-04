@@ -1,13 +1,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import openai
-from app.api.v1.endpoints import game  # Adjusted import path
+from app.api.v1.endpoints import game, character # Adjusted import path
 from app.db.session import engine      # Adjusted import path
 from app.db.base import Base            # Adjusted import path
+
+# 
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+
 
 # Configure CORS to allow frontend access
 app.add_middleware(
@@ -19,6 +23,8 @@ app.add_middleware(
 )
 
 app.include_router(game.router, prefix="/api/v1/game")
+app.include_router(character.router, prefix="/api/v1", tags=["character"])
+print([route.path for route in app.routes])
 
 @app.get("/")
 def read_root():

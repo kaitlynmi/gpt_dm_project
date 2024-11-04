@@ -1,0 +1,36 @@
+sequenceDiagram
+
+    participant Frontend
+    participant Backend
+    participant GPTService as GPTService<br>(Narrator and Rule Validator)
+    participant Cache as Rules Cache
+    
+    GPTService->>Backend: Generate Narrative and Update State (initial scenario)
+    Backend-->>Frontend: Display initial narrative
+    
+    Frontend->>Backend: Player Action ("slam door shut to block enemy’s path")
+    Note right of Backend: Retrieve character info and<br> context of current game state
+    
+    Backend->>Cache: Check action rules (slam door shut)
+    alt Action Found in Cache
+        Cache-->>Backend: Retrieve rules and outcomes
+    else Action Not Found in Cache
+        Backend->>GPTService: Request rule validation<br> and outcome generation
+        GPTService->>Cache: Store validated rules and outcomes
+			  GPTService->>Backend: return result and request rolls to continue
+		end
+    
+    Backend-->>Frontend: Display notification on action validity
+    
+    opt Action Valid
+				Frontend->>Backend: Player comfirms
+        Backend->>Backend: Execute dice roll (1d20), apply modifiers
+        Note right of Backend: e.g., 1d20 + athletics + equipment
+        
+        Backend-->>Frontend: Display roll result and final outcome<br> (e.g., “Roll: 18. Success!”)
+        
+        GPTService->>Backend: Generate narrative based on outcome
+        Backend-->>Frontend: Update and display narrative
+    
+    end
+
