@@ -10,3 +10,5 @@ node_modules/
 
 # SQLite
 *.sqlite3
+
+.DS_Store

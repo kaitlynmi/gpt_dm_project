@@ -2,9 +2,9 @@
 
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from app.db.session import get_db
+from app.database.session import get_db
 from pydantic import BaseModel
-from app.services.character_service import CharacterService
+from app.services.v1.character_service import CharacterService
 
 router = APIRouter()
 
@@ -19,7 +19,7 @@ class CharacterCreateResponse(BaseModel):
 
 @router.post("/character/create", response_model=CharacterCreateResponse)
 async def create_character(request: CharacterCreateRequest, db: Session = Depends(get_db)):
-    character_id, character_data = CharacterService(db).create_character(request.dict())
+    character_id, character_data = CharacterService(db).create_character(request.model_dump())
     return CharacterCreateResponse(character_id=character_id, character_data=character_data)
 
 @router.get("/character/{character_id}", response_model=dict)

@@ -4,6 +4,9 @@ import os
 # Load environment variables from .env file
 load_dotenv()
 
-# Print environment variables for testing
-for key, value in os.environ.items():
-    print(f'{key}: {value}')
+class Config:
+    ZHIPU_GLM_API_KEY = os.getenv("ZHIPU_GLM_API_KEY")
+    ZHIPU_API_BASE_URL = os.getenv("ZHIPU_API_BASE_URL")
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///dev.db")
+
+config = Config()
